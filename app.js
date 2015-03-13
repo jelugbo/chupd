@@ -14,6 +14,7 @@ var braintree = require('braintree');
 
 
 
+
 var gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
   merchantId: "xycp8rk96scpf7z6",
@@ -44,6 +45,8 @@ var group = require('./routes/group');
 var devotions = require('./routes/devotion');
 var ministry = require('./routes/ministry')
 var channel = require('./routes/channel');
+var pushNotification = require('./routes/pushNotification');
+
 
 var app = express();
 app.use(cors());
@@ -105,6 +108,14 @@ app.use(app.router);
 app.use('/upload', upload.fileHandler());
 
 
+
+ 
+
+
+
+
+
+
 // CRUD Invocation
 
         // Create Data
@@ -124,6 +135,8 @@ app.use('/upload', upload.fileHandler());
           app.post('/devotion', devotions.create);
           app.post('/ministry',ministry.create);
           app.post('/queryEvent', events.queryEvent);
+          app.post('/pushmessage', pushNotification.pushNotification);
+          app.post('/deviceRegistration',pushNotification.deviceRegistration);
 
         // End of Create Data
 
@@ -152,6 +165,7 @@ app.use('/upload', upload.fileHandler());
           app.get('/channel',channel.index);
           app.get('/media/:channel',media.show);
           app.get('/selectmedia/:id',media.getByID);
+           app.get('/devices',pushNotification.devices);
         // End OF Read
 
         // Update Data
