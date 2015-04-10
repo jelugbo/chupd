@@ -1,0 +1,2 @@
+{ "_id" : { "$oid" : "54ad5c82a676444c181aa06b" }, "email_address" : "moseswemegah@gmail.com", "blocked" : false, "canDeleteUser" : true, "canBlockUsers" : true, "canSendInvites" : true, "canEditEvent" : true, "canViewEventList" : true, "__v" : 0 }
+{ "_id" : { "$oid" : "54aeb195ded2f24c2882447d" }, "email_address" : "moseswemegah@yahoo.com", "blocked" : false, "__v" : 0, "canBlockUsers" : false, "canDeleteUser" : false, "canEditEvent" : false, "canSendInvites" : false, "canViewEventList" : true }

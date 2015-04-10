@@ -2,6 +2,7 @@ var express = require('../node_modules/express');
 var app = express();
 var path = require('path');
 var fs = require('fs');
+var im = require('imagemagick');
 
 var news = require('../models/news').news;
 var upload = require('../node_modules/jquery-file-upload-middleware');
@@ -23,14 +24,19 @@ app.use(express.static(path.join(__dirname, 'public')));
     }
     });
 
-exports.newsImage =function(imagedata, req , res){
+exports.newsImage =function(imagedata, req , res, dirPath){
 // console.log(imagedata.url);
 // console.log(imagedata);
 // console.log(req);
+// dirPath
+console.log(imagedata)
+var testPath = 'c:/Users/MECS/mean/church-app'
+var sourcePath = dirPath + "/public/uploads/" + imagedata.name;
+var thumbPath = dirPath + "/public/uploads/thumbnail/" + imagedata.name;
+
+
 var newsnewsTitle = req.fields.newsnewsTitle; 
       var newsDate = req.fields.newsDate;
-
-      
 
       var newsDescription1 = req.fields.newsDescription1;
       var newsDescription2 = req.fields.newsDescription2;
@@ -42,19 +48,33 @@ var newsnewsTitle = req.fields.newsnewsTitle;
       
       newnews.newsTitle = newsnewsTitle;
 
-      newnews.date = newsDate;
+      newnews.date = newsDate;                                                                                                                        
 
       newnews.imageURl = newsImageUrl;
       newnews.imageName = newsImageName;
-
+      news.thumbnailURL = thumbPath;
       newnews.description1 = newsDescription1;
       newnews.description2 = newsDescription2;
       newnews.description3 = newsDescription3;
 
 
+
       newnews.save(function(err) {
       
         if(!err) {
+
+          console.log('srcPath: ' + sourcePath);
+          console.log('thumbPath: ' + thumbPath);
+        im.resize({
+          srcPath: sourcePath,
+          dstPath: thumbPath,
+          width:   200
+        }, function(err, stdout, stderr){
+          if (err) throw err;
+          console.log('resized image to fit within 200x200px');
+        });
+
+
             res.json(201, {message: 'news created with date : ' + newnews.date });
         } else {
           console.log(err);
@@ -62,12 +82,8 @@ var newsnewsTitle = req.fields.newsnewsTitle;
         }
       
       });
-      
-
-
-
-
 }
+
 
 exports.newsWithImage =function(req,res,next){
 upload.fileHandler({
@@ -255,6 +271,12 @@ exports.delete = function(req, res, path) {
        fs.unlink(fullmagePath, function() {
             if (err) throw err;
             console.log ("Deleted : " + fullmagePath);
+            // res.send('File uploaded to: ' + target_path + ' - ' + req.files.thumbnail.size + ' bytes');
+        });
+       var thumbnailPath = path + '/public/uploads/thumbnail/' + doc.imageName;
+        fs.unlink(thumbnailPath, function() {
+            if (err) throw err;
+            console.log ("Deleted : " + thumbnailPath);
             // res.send('File uploaded to: ' + target_path + ' - ' + req.files.thumbnail.size + ' bytes');
         });
 

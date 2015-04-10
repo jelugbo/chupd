@@ -15,6 +15,7 @@ var braintree = require('braintree');
 
 
 
+
 var gateway = braintree.connect({
   environment: braintree.Environment.Sandbox,
   merchantId: "xycp8rk96scpf7z6",
@@ -46,6 +47,7 @@ var devotions = require('./routes/devotion');
 var ministry = require('./routes/ministry')
 var channel = require('./routes/channel');
 var pushNotification = require('./routes/pushNotification');
+var im = require('imagemagick');
 
 
 var app = express();
@@ -137,7 +139,10 @@ app.use('/upload', upload.fileHandler());
           app.post('/queryEvent', events.queryEvent);
           app.post('/pushmessage', pushNotification.pushNotification);
           app.post('/deviceRegistration',pushNotification.deviceRegistration);
-
+          app.post('/pushMessageToIos', pushNotification.pushIosNotification);
+ app.post('/pushToDevices', pushNotification.pushToDevices);
+ app.post('/deviceById',pushNotification.devicesByID);
+ app.post('/changePushSetting',pushNotification.updateAllowSource);
         // End of Create Data
 
         // Read Data
@@ -166,6 +171,7 @@ app.use('/upload', upload.fileHandler());
           app.get('/media/:channel',media.show);
           app.get('/selectmedia/:id',media.getByID);
            app.get('/devices',pushNotification.devices);
+           app.get('/deviceById',pushNotification.devicesByID);
         // End OF Read
 
         // Update Data
@@ -191,6 +197,7 @@ app.use('/upload', upload.fileHandler());
           app.del('/department',department.delete);
           app.del('/group',group.delete);
           app.del('/ministry',ministry.delete);
+          app.del('/news' , function (req , res ){ news.delete(req , res , __dirname)});
           // app.del('/news',news.delete);
         // End of Delete Data
 
@@ -300,18 +307,21 @@ app.use('/upload', function(req, res, next){
 
 
 upload.on('end', function (fileInfo, req, res) { 
-  console.log (fileInfo);
-  // console.log (req);
+
+  dirPath = __dirname;
+ 
+
+
   if (req.fields.actionType =='newsWithImage'){
-        news.newsImage(fileInfo,req , res);
+        news.newsImage(fileInfo,req , res ,dirPath);
         console.log('saving news with image')
       }else if(req.fields.actionType =='mediaWithImage'){
-        media.mediaImage(fileInfo,req , res);
+        media.mediaImage(fileInfo,req , res,dirPath);
         console.log('Saving video information with image')
       }else if(req.fields.actionType =='channelWithImage'){
         try{
           console.log (req.fields);
-        channel.createChannelWithImage(fileInfo,req , res);
+        channel.createChannelWithImage(fileInfo,req , res ,dirPath);
         console.log('Saving channel information with image')
         }catch(err){
           console.log(err);

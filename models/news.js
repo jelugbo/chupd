@@ -8,6 +8,7 @@ var newsSchema = new Schema({
   newsTitle: {type:String, required:true}
   ,date: {type:Date , required:true}
   ,imageURl: {type:String , required: false }
+  ,thumbnailURL: {type:String , required: false }
   ,imageName:{type:String , required: false }
   ,videoURL: {type:String, required:false}
   ,description1: {type: String, required:false}
